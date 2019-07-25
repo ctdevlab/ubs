@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">UBS</string>
+    <string name="member_id">Member ID</string>
+    <string name="password">Password</string>
+    <string name="signin_button">Sign In</string>
+    <string name="signup_button">Sign Up</string>
+    <string name="signout_button">Sign Out</string>
+    <string name="information_button">Information</string>
+    <string name="organization_button">Organization</string>
+    <string name="shop_button">Shop</string>
+    <string name="message_button">Message</string>
+    <string name="submit_post">Submit</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="topic">Topic</string>
+    <string name="cancel">Cancel</string>
+    <string name="name">Name</string>
+    <string name="welcome">Welcome</string>
+</resources>
