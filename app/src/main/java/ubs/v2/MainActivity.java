@@ -2,9 +2,12 @@ package ubs.v2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;

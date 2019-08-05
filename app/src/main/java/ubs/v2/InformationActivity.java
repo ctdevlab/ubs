@@ -19,13 +19,13 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 
 public class InformationActivity extends AppCompatActivity {
 
-    private FloatingActionButton create_topic;
-    private DatabaseReference mDatabase;
+    private DatabaseReference topicsTable;
+    private DatabaseReference postsTable;
     private ListView list_v;
     private ArrayList<Topic> listV = new ArrayList<>();
     private ArrayAdapter<Topic> adapter;
@@ -37,18 +37,19 @@ public class InformationActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Information");
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Information_Topic");
-        create_topic = findViewById(R.id.Floating_Button);
+        topicsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.TOPICS_DB_KEY);
+        postsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.POSTS_DB_KEY);
+        FloatingActionButton createTopicButton = findViewById(R.id.Floating_Button);
         list_v = findViewById(R.id.List_V);
-        adapter = new ArrayAdapter<Topic>(this, R.layout.custom_view, listV);
+        adapter = new ArrayAdapter<>(this, R.layout.custom_view, listV);
         list_v.setAdapter(adapter);
         registerForContextMenu(list_v);
 
-        create_topic.setOnClickListener(new View.OnClickListener() {
+        createTopicButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(InformationActivity.this, TopicActivity.class);
-                intent.putExtra("system", "Information_Topic");
+                intent.putExtra("system", Constants.CREATE_TOPIC);
                 startActivity(intent);
                 finish();
             }
@@ -67,7 +68,7 @@ public class InformationActivity extends AppCompatActivity {
             }
         });
 
-        mDatabase.addChildEventListener(new ChildEventListener() {
+        topicsTable.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Topic data = dataSnapshot.getValue(Topic.class);
@@ -109,16 +110,14 @@ public class InformationActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        switch(item.getItemId()){
+        switch (item.getItemId()){
             case 0:
                 Topic value = listV.get(info.position);
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
                 if(value.getUid().equals(currentUser.getUid())){
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("Information_Topic");
-                    mDatabase.child(value.getKey()).removeValue();
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("Information_Post");
-                    mDatabase.child(value.getTopic()).removeValue();
+                    topicsTable.child(value.getKey()).removeValue();
+                    postsTable.child(value.getTopic()).removeValue();
                     adapter.remove(adapter.getItem(info.position));
                     adapter.notifyDataSetChanged();
                 }

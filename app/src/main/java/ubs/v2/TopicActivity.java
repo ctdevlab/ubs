@@ -32,7 +32,7 @@ public class TopicActivity extends AppCompatActivity {
         Intent intent = getIntent();
         system = intent.getStringExtra("system");
 
-        if(system.equals("Information_Topic")){
+        if(system.equals(Constants.CREATE_TOPIC)){
             getSupportActionBar().setTitle("Create a Topic");
         }
         else if(system.equals("Organization_Topic")){
@@ -53,21 +53,23 @@ public class TopicActivity extends AppCompatActivity {
 
                 if(topic_txt.isEmpty()){
                     Toast.makeText(TopicActivity.this, "Name cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    String key = mDatabase.child(system).push().getKey();
-                    mDatabase.child(system).child(key).child("key").setValue(key);
-                    mDatabase.child(system).child(key).child("topic").setValue(topic_txt.toLowerCase());
-                    mDatabase.child(system).child(key).child("uid").setValue(currentUser.getUid()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                } else {
+                    String table = system;
+                    if (system.equals(Constants.CREATE_TOPIC)) {
+                        table = DatabaseManager.TOPICS_DB_KEY;
+                    }
+                    String key = mDatabase.child(table).push().getKey();
+                    mDatabase.child(table).child(key).child("key").setValue(key);
+                    mDatabase.child(table).child(key).child("topic").setValue(topic_txt.toLowerCase());
+                    mDatabase.child(table).child(key).child("uid").setValue(currentUser.getUid()).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
 
-                            if(system.equals("Information_Topic")){
+                            if (system.equals(Constants.CREATE_TOPIC)) {
                                 Intent intent = new Intent(TopicActivity.this, InformationActivity.class);
                                 startActivity(intent);
                                 finish();
-                            }
-                            else if(system.equals("Organization_Topic")){
+                            } else if (system.equals("Organization_Topic")) {
                                 Intent intent = new Intent(TopicActivity.this, OrganizationActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -87,16 +89,7 @@ public class TopicActivity extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(system.equals("Information_Topic")){
-                    Intent intent = new Intent(TopicActivity.this, InformationActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-                else if(system.equals("Organization_Topic")){
-                    Intent intent = new Intent(TopicActivity.this, OrganizationActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                onBackPressed();
             }
         });
     }
@@ -104,7 +97,7 @@ public class TopicActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(system.equals("Information_Topic")){
+        if(system.equals(Constants.CREATE_TOPIC)){
             Intent intent = new Intent(TopicActivity.this, InformationActivity.class);
             startActivity(intent);
             finish();
