@@ -45,6 +45,8 @@ public class ViewActivity extends AppCompatActivity {
         String table = system;
         if (system.equals(Constants.CREATE_TOPIC_POST)) {
             table = DatabaseManager.TOPIC_POSTS_DB_KEY;
+        } else if (system.equals(Constants.CREATE_ORGANIZATION_POST)) {
+            table = DatabaseManager.ORGANIZATION_POSTS_DB_KEY;
         }
         mDatabase = FirebaseDatabase.getInstance().getReference().child(table).child(name);
         FloatingActionButton createPostButton = findViewById(R.id.Floating_Button);
@@ -104,7 +106,7 @@ public class ViewActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-        else if(system.equals("Organization_Post")){
+        else if(system.equals(Constants.CREATE_ORGANIZATION_POST)){
             Intent intent = new Intent(ViewActivity.this, OrganizationActivity.class);
             startActivity(intent);
             finish();

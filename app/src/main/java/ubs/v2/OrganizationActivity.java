@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class OrganizationActivity extends AppCompatActivity {
 
     private DatabaseReference organizationsTable;
-    private DatabaseReference postsTable;
+    private DatabaseReference organizationPostsTable;
     private ArrayList<Topic> listV = new ArrayList<>();
     private ArrayAdapter<Topic> adapter;
 
@@ -37,7 +37,7 @@ public class OrganizationActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Organization");
 
         organizationsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.ORGANIZATIONS_DB_KEY);
-        postsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.ORGANIZATION_POSTS_DB_KEY);
+        organizationPostsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.ORGANIZATION_POSTS_DB_KEY);
         FloatingActionButton createOrgButton = findViewById(R.id.Floating_Button);
         ListView listView = findViewById(R.id.List_V);
         adapter = new ArrayAdapter<>(this, R.layout.custom_view, listV);
@@ -61,7 +61,7 @@ public class OrganizationActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(OrganizationActivity.this, ViewActivity.class);
                 intent.putExtra("name", value.getTopic());
-                intent.putExtra("system", "Organization_Post");
+                intent.putExtra("system", Constants.CREATE_ORGANIZATION_POST);
                 startActivity(intent);
                 finish();
             }
@@ -116,7 +116,7 @@ public class OrganizationActivity extends AppCompatActivity {
 
                 if(value.getUid().equals(currentUser.getUid())){
                     organizationsTable.child(value.getKey()).removeValue();
-                    postsTable.child(value.getTopic()).removeValue();
+                    organizationPostsTable.child(value.getTopic()).removeValue();
                     adapter.remove(adapter.getItem(info.position));
                     adapter.notifyDataSetChanged();
                 }

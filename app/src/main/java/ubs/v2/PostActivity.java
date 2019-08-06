@@ -74,6 +74,8 @@ public class PostActivity extends AppCompatActivity implements View.OnClickListe
             String table = system;
             if (system.equals(Constants.CREATE_TOPIC_POST)) {
                 table = DatabaseManager.TOPIC_POSTS_DB_KEY;
+            } else if (system.equals(Constants.CREATE_ORGANIZATION_POST)) {
+                table = DatabaseManager.ORGANIZATION_POSTS_DB_KEY;
             }
             DatabaseReference newPostRef = mDatabase.child(table).child(name).push();
             Post post = new Post(postTitle, postDescription, currentUser.getUid(), newPostRef.getKey());
