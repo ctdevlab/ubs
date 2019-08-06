@@ -6,7 +6,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class DatabaseManager {
 
     public static final String TOPICS_DB_KEY = "topics";
-    public static final String POSTS_DB_KEY = "posts";
+    public static final String TOPIC_POSTS_DB_KEY = "topic_posts";
     public static final String ORGANIZATIONS_DB_KEY = "organizations";
     public static final String ORGANIZATION_POSTS_DB_KEY = "organization_posts";
 

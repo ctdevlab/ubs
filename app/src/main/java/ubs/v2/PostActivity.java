@@ -1,26 +1,22 @@
 package ubs.v2;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
-public class PostActivity extends AppCompatActivity {
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
-    private Button submit;
-    private Button cancel;
+public class PostActivity extends AppCompatActivity implements View.OnClickListener {
+
     private EditText title;
     private EditText description;
     private FirebaseAuth mAuth;
@@ -40,57 +36,12 @@ public class PostActivity extends AppCompatActivity {
         system = intent.getStringExtra("system");
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = DatabaseManager.getInstance().getDatabaseReference();
         title = findViewById(R.id.Topic);
         description = findViewById(R.id.Description);
-        submit = findViewById(R.id.Submit);
-        cancel = findViewById(R.id.Cancel);
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String title_post = title.getText().toString().trim();
-                String des_post = description.getText().toString().trim();
-                FirebaseUser currentUser = mAuth.getCurrentUser();
-
-                if(title_post.isEmpty() || des_post.isEmpty()){
-                    Toast.makeText(PostActivity.this, "Title and Description cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-                else{
-                    String key = mDatabase.child(system).child(name).push().getKey();
-                    mDatabase.child(system).child(name).child(key).child("key").setValue(key);
-                    mDatabase.child(system).child(name).child(key).child("title").setValue(title_post);
-                    mDatabase.child(system).child(name).child(key).child("description").setValue(des_post);
-                    mDatabase.child(system).child(name).child(key).child("uid").setValue(currentUser.getUid()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Intent intent = new Intent(PostActivity.this, ViewActivity.class);
-                            intent.putExtra("name", name);
-                            intent.putExtra("system", system);
-                            startActivity(intent);
-                            finish();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            String error = e.getMessage();
-                            Toast.makeText(PostActivity.this, error, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(PostActivity.this, ViewActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("system", system);
-                startActivity(intent);
-                finish();
-            }
-        });
+        findViewById(R.id.Submit).setOnClickListener(this);
+        findViewById(R.id.Cancel).setOnClickListener(this);
     }
 
     @Override
@@ -101,6 +52,43 @@ public class PostActivity extends AppCompatActivity {
         intent.putExtra("system", system);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.Submit) {
+            createPost();
+        } else if (view.getId() == R.id.Cancel) {
+            onBackPressed();
+        }
+    }
+
+    private void createPost() {
+        String postTitle = title.getText().toString().trim();
+        String postDescription = description.getText().toString().trim();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (postTitle.isEmpty() || postDescription.isEmpty()) {
+            Toast.makeText(this, "Title and Description cannot be empty", Toast.LENGTH_SHORT).show();
+        } else {
+            String table = system;
+            if (system.equals(Constants.CREATE_TOPIC_POST)) {
+                table = DatabaseManager.TOPIC_POSTS_DB_KEY;
+            }
+            DatabaseReference newPostRef = mDatabase.child(table).child(name).push();
+            Post post = new Post(postTitle, postDescription, currentUser.getUid(), newPostRef.getKey());
+            newPostRef.setValue(post, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference databaseReference) {
+                    if (error != null) {
+                        String message = error.getMessage();
+                        Toast.makeText(PostActivity.this, message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        onBackPressed();
+                    }
+                }
+            });
+        }
     }
 }
 

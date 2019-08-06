@@ -37,7 +37,7 @@ public class InformationActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Information");
 
         topicsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.TOPICS_DB_KEY);
-        postsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.POSTS_DB_KEY);
+        postsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.TOPIC_POSTS_DB_KEY);
         FloatingActionButton createTopicButton = findViewById(R.id.Floating_Button);
         ListView listView = findViewById(R.id.List_V);
         adapter = new ArrayAdapter<>(this, R.layout.custom_view, listV);
@@ -61,7 +61,7 @@ public class InformationActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(InformationActivity.this, ViewActivity.class);
                 intent.putExtra("name", value.getTopic());
-                intent.putExtra("system", "Information_Post");
+                intent.putExtra("system", Constants.CREATE_TOPIC_POST);
                 startActivity(intent);
                 finish();
             }

@@ -25,9 +25,7 @@ import java.util.ArrayList;
 
 public class ViewActivity extends AppCompatActivity {
 
-    private FloatingActionButton create_post;
     private DatabaseReference mDatabase;
-    private ListView list_v;
     private ArrayList<Post> listV = new ArrayList<>();
     private ArrayAdapter<Post> adapter;
     private String name;
@@ -44,14 +42,18 @@ public class ViewActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(name);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(system).child(name);
-        create_post = findViewById(R.id.Floating_Button);
-        list_v = findViewById(R.id.List_V);
-        adapter = new ArrayAdapter<Post>(this, R.layout.custom_view_post, listV);
-        list_v.setAdapter(adapter);
-        registerForContextMenu(list_v);
+        String table = system;
+        if (system.equals(Constants.CREATE_TOPIC_POST)) {
+            table = DatabaseManager.TOPIC_POSTS_DB_KEY;
+        }
+        mDatabase = FirebaseDatabase.getInstance().getReference().child(table).child(name);
+        FloatingActionButton createPostButton = findViewById(R.id.Floating_Button);
+        ListView listView = findViewById(R.id.List_V);
+        adapter = new ArrayAdapter<>(this, R.layout.custom_view_post, listV);
+        listView.setAdapter(adapter);
+        registerForContextMenu(listView);
 
-        create_post.setOnClickListener(new View.OnClickListener() {
+        createPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ViewActivity.this, PostActivity.class);
@@ -97,7 +99,7 @@ public class ViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(system.equals("Information_Post")){
+        if(system.equals(Constants.CREATE_TOPIC_POST)){
             Intent intent = new Intent(ViewActivity.this, InformationActivity.class);
             startActivity(intent);
             finish();

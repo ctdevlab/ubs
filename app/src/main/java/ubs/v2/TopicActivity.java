@@ -10,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,7 +37,7 @@ public class TopicActivity extends AppCompatActivity implements View.OnClickList
         }
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = DatabaseManager.getInstance().getDatabaseReference();
         topic = findViewById(R.id.Topic);
 
         findViewById(R.id.Submit).setOnClickListener(this);
