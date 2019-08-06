@@ -6,12 +6,13 @@ public class Topic {
     String key;
 
     public Topic() {
+        // must have
     }
 
     public Topic(String topic, String uid, String key) {
         this.topic = topic;
         this.uid = uid;
-        this.key = uid;
+        this.key = key;
     }
 
     public String getTopic() {

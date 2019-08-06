@@ -26,7 +26,6 @@ public class InformationActivity extends AppCompatActivity {
 
     private DatabaseReference topicsTable;
     private DatabaseReference postsTable;
-    private ListView list_v;
     private ArrayList<Topic> listV = new ArrayList<>();
     private ArrayAdapter<Topic> adapter;
 
@@ -40,10 +39,10 @@ public class InformationActivity extends AppCompatActivity {
         topicsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.TOPICS_DB_KEY);
         postsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.POSTS_DB_KEY);
         FloatingActionButton createTopicButton = findViewById(R.id.Floating_Button);
-        list_v = findViewById(R.id.List_V);
+        ListView listView = findViewById(R.id.List_V);
         adapter = new ArrayAdapter<>(this, R.layout.custom_view, listV);
-        list_v.setAdapter(adapter);
-        registerForContextMenu(list_v);
+        listView.setAdapter(adapter);
+        registerForContextMenu(listView);
 
         createTopicButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +54,7 @@ public class InformationActivity extends AppCompatActivity {
             }
         });
 
-        list_v.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Topic value = listV.get(i);
