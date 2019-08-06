@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, ViewActivity.class);
                 intent.putExtra("name", "shop");
-                intent.putExtra("system", "Shop_Post");
+                intent.putExtra("system", Constants.CREATE_SHOP_POST);
                 startActivity(intent);
                 finish();
             }

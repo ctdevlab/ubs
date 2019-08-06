@@ -13,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EntryActivity"/>
-        <activity android:name=".ShopActivity"/>
         <activity android:name=".OrganizationActivity"/>
         <activity android:name=".ViewActivity"/>
         <activity android:name=".TopicActivity"/>

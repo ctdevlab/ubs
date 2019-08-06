@@ -43,12 +43,16 @@ public class ViewActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(name);
 
         String table = system;
+
         if (system.equals(Constants.CREATE_TOPIC_POST)) {
             table = DatabaseManager.TOPIC_POSTS_DB_KEY;
         } else if (system.equals(Constants.CREATE_ORGANIZATION_POST)) {
             table = DatabaseManager.ORGANIZATION_POSTS_DB_KEY;
+        } else if (system.equals(Constants.CREATE_SHOP_POST)) {
+            table = DatabaseManager.SHOP_POSTS_DB_KEY;
         }
-        mDatabase = FirebaseDatabase.getInstance().getReference().child(table).child(name);
+
+        mDatabase = DatabaseManager.getInstance().getDatabaseReference().child(table).child(name);
         FloatingActionButton createPostButton = findViewById(R.id.Floating_Button);
         ListView listView = findViewById(R.id.List_V);
         adapter = new ArrayAdapter<>(this, R.layout.custom_view_post, listV);
@@ -101,18 +105,15 @@ public class ViewActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if(system.equals(Constants.CREATE_TOPIC_POST)){
-            Intent intent = new Intent(ViewActivity.this, InformationActivity.class);
-            startActivity(intent);
-            finish();
+        Intent intent = null;
+        if (system.equals(Constants.CREATE_TOPIC_POST)) {
+            intent = new Intent(ViewActivity.this, InformationActivity.class);
+        } else if (system.equals(Constants.CREATE_ORGANIZATION_POST)) {
+            intent = new Intent(ViewActivity.this, OrganizationActivity.class);
+        } else if (system.equals(Constants.CREATE_SHOP_POST)) {
+            intent = new Intent(ViewActivity.this, MainActivity.class);
         }
-        else if(system.equals(Constants.CREATE_ORGANIZATION_POST)){
-            Intent intent = new Intent(ViewActivity.this, OrganizationActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        else if(system.equals("Shop_Post")){
-            Intent intent = new Intent(ViewActivity.this, MainActivity.class);
+        if (intent != null) {
             startActivity(intent);
             finish();
         }
