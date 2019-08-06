@@ -12,7 +12,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,9 +24,8 @@ import java.util.ArrayList;
 
 public class OrganizationActivity extends AppCompatActivity {
 
-    private FloatingActionButton create_topic;
-    private DatabaseReference mDatabase;
-    private ListView list_v;
+    private DatabaseReference organizationsTable;
+    private DatabaseReference postsTable;
     private ArrayList<Topic> listV = new ArrayList<>();
     private ArrayAdapter<Topic> adapter;
 
@@ -38,24 +36,25 @@ public class OrganizationActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Organization");
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Organization_Topic");
-        create_topic = findViewById(R.id.Floating_Button);
-        list_v = findViewById(R.id.List_V);
-        adapter = new ArrayAdapter<Topic>(this, R.layout.custom_view, listV);
-        list_v.setAdapter(adapter);
-        registerForContextMenu(list_v);
+        organizationsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.ORGANIZATIONS_DB_KEY);
+        postsTable = DatabaseManager.getInstance().getDatabaseReference().child(DatabaseManager.ORGANIZATION_POSTS_DB_KEY);
+        FloatingActionButton createOrgButton = findViewById(R.id.Floating_Button);
+        ListView listView = findViewById(R.id.List_V);
+        adapter = new ArrayAdapter<>(this, R.layout.custom_view, listV);
+        listView.setAdapter(adapter);
+        registerForContextMenu(listView);
 
-        create_topic.setOnClickListener(new View.OnClickListener() {
+        createOrgButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(OrganizationActivity.this, TopicActivity.class);
-                intent.putExtra("system", "Organization_Topic");
+                intent.putExtra("system", Constants.CREATE_ORGANIZATION);
                 startActivity(intent);
                 finish();
             }
         });
 
-        list_v.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Topic value = listV.get(i);
@@ -68,7 +67,7 @@ public class OrganizationActivity extends AppCompatActivity {
             }
         });
 
-        mDatabase.addChildEventListener(new ChildEventListener() {
+        organizationsTable.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Topic data = dataSnapshot.getValue(Topic.class);
@@ -116,10 +115,8 @@ public class OrganizationActivity extends AppCompatActivity {
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
 
                 if(value.getUid().equals(currentUser.getUid())){
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("Organization_Topic");
-                    mDatabase.child(value.getKey()).removeValue();
-                    mDatabase = FirebaseDatabase.getInstance().getReference().child("Organization_Post");
-                    mDatabase.child(value.getTopic()).removeValue();
+                    organizationsTable.child(value.getKey()).removeValue();
+                    postsTable.child(value.getTopic()).removeValue();
                     adapter.remove(adapter.getItem(info.position));
                     adapter.notifyDataSetChanged();
                 }

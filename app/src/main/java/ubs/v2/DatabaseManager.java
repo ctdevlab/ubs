@@ -7,6 +7,8 @@ public class DatabaseManager {
 
     public static final String TOPICS_DB_KEY = "topics";
     public static final String POSTS_DB_KEY = "posts";
+    public static final String ORGANIZATIONS_DB_KEY = "organizations";
+    public static final String ORGANIZATION_POSTS_DB_KEY = "organization_posts";
 
     private static DatabaseManager instance;
     private FirebaseDatabase database;

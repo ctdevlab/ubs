@@ -33,7 +33,7 @@ public class TopicActivity extends AppCompatActivity implements View.OnClickList
 
         if (system.equals(Constants.CREATE_TOPIC)) {
             getSupportActionBar().setTitle("Create a Topic");
-        } else if (system.equals("Organization_Topic")) {
+        } else if (system.equals(Constants.CREATE_ORGANIZATION)) {
             getSupportActionBar().setTitle("Create a Club");
         }
 
@@ -50,7 +50,7 @@ public class TopicActivity extends AppCompatActivity implements View.OnClickList
         super.onBackPressed();
         if (system.equals(Constants.CREATE_TOPIC)) {
             goBackToInformation();
-        } else if (system.equals("Organization_Topic")) {
+        } else if (system.equals(Constants.CREATE_ORGANIZATION)) {
             goBackToOrganization();
         }
     }
@@ -86,6 +86,8 @@ public class TopicActivity extends AppCompatActivity implements View.OnClickList
             String table = system;
             if (system.equals(Constants.CREATE_TOPIC)) {
                 table = DatabaseManager.TOPICS_DB_KEY;
+            } else if (system.equals(Constants.CREATE_ORGANIZATION)) {
+                table = DatabaseManager.ORGANIZATIONS_DB_KEY;
             }
 
             DatabaseReference newTopicRef = mDatabase.child(table).push();
